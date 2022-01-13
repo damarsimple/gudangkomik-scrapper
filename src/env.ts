@@ -1,0 +1,1 @@
+export const host = "https://gudangkomik.com/api" || "http://localhost:8000/api"

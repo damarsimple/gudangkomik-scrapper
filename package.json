@@ -1,0 +1,32 @@
+{
+  "name": "my-webpack-project",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "webpack --mode=production --node-env=production",
+    "preview": "vite preview",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "@webpack-cli/generators": "^2.4.1",
+    "prettier": "^2.5.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.4",
+    "vite": "^2.7.7",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/lodash": "^4.14.178",
+    "@types/parse-json": "^4.0.0",
+    "axios": "^0.24.0",
+    "global": "^4.4.0",
+    "lodash": "^4.17.21",
+    "slugify": "^1.6.4"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "description": "My webpack project"
+}

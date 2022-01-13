@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Gudang Komik Scrapper",
+  "version": "1.0",
+  "description": "Scrap Targeted website",
+  "icons": {
+    "48": "icon.png"
+  },
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.komikcast.com/*",
+        "*://*.manhwaindo.id/*",
+        "*://*.manhwaland.icu/*"
+      ],
+      "js": ["dist/main.js"]
+    }
+  ]
+}
