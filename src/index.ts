@@ -10,16 +10,13 @@ async function main() {
     document.readyState === "interactive" ||
     document.readyState === "complete"
   ) {
-    // const ignores: string[] = await(
-    //   await axios.get("https://gudangkomik.com/api/ignores")
-    // ).data.ignores;
+    const ignores: string[] = await (
+      await axios.get("https://gudangkomik.com/api/ignores")
+    ).data.ignores;
 
-    // const specials: string[] = await(
-    //   await axios.get("https://gudangkomik.com/api/special")
-    // ).data.special;
-
-    const ignores: string[] = [];
-    const specials: string[] = [];
+    const specials: string[] = await (
+      await axios.get("https://gudangkomik.com/api/special")
+    ).data.special;
 
     const links = new Set<string>();
     let outerIter = 0;
@@ -97,8 +94,7 @@ async function main() {
     }
   }
 }
-const removeReq = async (link: string) => 1 + 1;
-
-// await axios.post("https://gudangkomik.com/api/special-remove", {
-//   special: link,
-// });
+const removeReq = async (link: string) =>
+  await axios.post("https://gudangkomik.com/api/special-remove", {
+    special: link,
+  });
