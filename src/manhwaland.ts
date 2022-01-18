@@ -65,10 +65,11 @@ export class Manhwaland {
       .querySelectorAll("a")
       .forEach((e) => {
         const href = e.getAttribute("href");
-        chapters.push({
-          name: `${parseFloat(e.textContent.replace("Chapter", ""))}`,
-          href,
-        });
+        if (href.includes("chapter"))
+          chapters.push({
+            name: `${parseFloat(e.textContent.replace("Chapter", ""))}`,
+            href,
+          });
       });
 
     chapters = uniq(chapters);
