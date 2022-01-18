@@ -4,14 +4,22 @@ import { filenameGueser, extExtractor, downloadAndUpload } from "./helper";
 import { Chapter, ChapterCandidate, Comic } from "./types";
 import { gkInteractor } from "./gkInteractor";
 export class Komikcastid {
+  public static getDeclaration() {
+    return {
+      name: "komicastid",
+      url: "https://komikcastid.com/komik-terbaru/",
+      class: Komikcastid,
+    };
+  }
   public static async getUpdates(document: Document) {
     const links = new Set<string>();
 
     console.log("Komikcastid detected");
+
     document.querySelectorAll("a").forEach((e) => {
       try {
         const link = e.getAttribute("href");
-        if (link && link.includes("https://komikcastid.com//komik/")) {
+        if (link && link.includes("https://komikcastid.com/komik/")) {
           links.add(link);
         }
       } catch (error) {}
@@ -68,7 +76,7 @@ export class Komikcastid {
     const slug = await gkInteractor.getFromSlug(title);
 
     const thumbUrl = doc
-      .querySelector(".komik_info-content-thumbnail")
+      .querySelector(".thumb")
       .querySelector("img")
       .getAttribute("src");
 
@@ -76,15 +84,11 @@ export class Komikcastid {
       name: title,
       alt_name: alt_title,
       slug: slug.result,
-      description: doc.querySelector(".komik_info-description-sinopsis")
-        .textContent,
+      description: doc.querySelector(".kshortcsc, .sht2").textContent,
       genres: genres,
-      rating: parseFloat(
-        doc.querySelector(".data-rating").textContent.replace("Rating ", "")
-      ).toString(),
+      rating: 7.5,
       ...(info as unknown as Comic),
     };
-
     if (!slug.exist) {
       const filename = filenameGueser(thumbUrl);
       const ext = extExtractor(filename);
@@ -121,26 +125,29 @@ export class Komikcastid {
           );
 
           const imgDom = Array.from(
-            chapterDoc
-              .querySelector(".main-reading-area")
-              .querySelectorAll("img")
+            chapterDoc.querySelector("#chimg").querySelectorAll("img")
           );
 
           const images = imgDom.map((e) => e.getAttribute("src"));
 
           const target = chapterDoc.querySelector("h1").textContent;
-          console.log(`[${iter}/${chapterscandidate.length}] ${target}`);
+          console.log(`[${iter}/${chapterscandidate.length}] begin ${target}`);
 
           try {
             const splits = target.split(" ");
 
-            const chunk = splits.splice(splits.length - 4);
+            const chunk = splits[splits.length - 1];
 
             const name = parseFloat(
               isNaN(parseFloat(chunk[1])) ? chunk[0] : chunk[1]
             );
 
-            if (isNaN(name)) continue;
+            if (isNaN(name)) {
+              console.log(
+                `[${iter}/${chapterscandidate.length}] skip ${target} ${name} NAN DETECTED`
+              );
+              continue;
+            }
 
             const chapter: Chapter = {
               name: `${name}`,
@@ -175,8 +182,11 @@ export class Komikcastid {
 
             await gkInteractor.sanityEclipse(comic.slug, chapter);
           } catch (error) {
-            console.log(`[${title}] [Chapter ${target}] ${error}`);
+            console.log(
+              `[${title}] [Chapter ${target}] sanityEclipseError error ${error}`
+            );
           }
+          console.log(`[${iter}/${chapterscandidate.length}] finish ${target}`);
         } catch (error) {
           console.log(error);
         }

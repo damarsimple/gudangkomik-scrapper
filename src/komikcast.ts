@@ -4,6 +4,13 @@ import { filenameGueser, extExtractor, downloadAndUpload } from "./helper";
 import { Chapter, ChapterCandidate, Comic } from "./types";
 import { gkInteractor } from "./gkInteractor";
 export class Komikcast {
+  public static getDeclaration() {
+    return {
+      name: "Komikcast",
+      url: "https://komikcast.com/",
+      class: Komikcast,
+    };
+  }
   public static async getUpdates(document: Document) {
     const links = new Set<string>();
 

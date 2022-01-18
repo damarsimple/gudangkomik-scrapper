@@ -12,116 +12,62 @@ async function main() {
     document.readyState === "interactive" ||
     document.readyState === "complete"
   ) {
-    console.log("fetching ignores and specials");
-
-    const ignores: string[] = await (
-      await axios.get("https://gudangkomik.com/api/ignore")
-    ).data.ignore;
-
-    const specials: string[] = await (
-      await axios.get("https://gudangkomik.com/api/special")
-    ).data.special;
-
-    console.log("completed fetch ignores and specials");
-
-    const links = new Set<string>();
     let outerIter = 0;
+    const declarations: {
+      name: string;
+      url: string;
+      class: any;
+    }[] = [
+      Manhwaindo.getDeclaration(),
+      Manhwaland.getDeclaration(),
+      Komikcastid.getDeclaration(),
+      Komikcast.getDeclaration(),
+    ];
 
-    if (location.href == "https://komikcast.com/") {
-      const urls = await Komikcast.getUpdates(document);
+    for (const x of declarations) {
+      if (location.href == x.url) {
+        console.log("fetching ignores and specials");
 
-      const myspecials = specials.filter((e) =>
-        e.includes("https://komikcast.com")
-      );
+        const ignores: string[] = await (
+          await axios.get("https://gudangkomik.com/api/ignore")
+        ).data.ignore;
 
-      console.log(`Found Specials ${myspecials.length} comic links`);
-      console.log(`Found ${urls.length} comic links`);
+        const specials: string[] = await (
+          await axios.get("https://gudangkomik.com/api/special")
+        ).data.special;
 
-      console.log(urls);
+        console.log("completed fetch ignores and specials");
 
-      for (const link of [...urls, ...myspecials]) {
-        outerIter++;
+        console.log(`detected ${x.name}`);
+        const urls = await x.class.getUpdates(document);
 
-        if (ignores.includes(link)) {
-          console.log("ignoreing " + link);
+        const myspecials = specials.filter((e) => e.includes(x.url));
+
+        console.log(`Found Specials ${myspecials.length} comic links`);
+        console.log(`Found ${urls.length} comic links`);
+
+        console.log(urls);
+
+        for (const link of [...urls, ...myspecials]) {
+          try {
+            outerIter++;
+
+            if (ignores.includes(link)) {
+              console.log("ignoreing " + link);
+            }
+            removeReq(link);
+            const comic = await x.class.parseAndUpload(link);
+            console.log(
+              `[${outerIter}/${urls.length}] [${x.name}] ${comic.name}`
+            );
+          } catch (error) {
+            console.log(
+              `[${outerIter}/${urls.length}] [${x.name}] error ${error}`
+            );
+          }
         }
-        removeReq(link);
-        const comic = await Komikcast.parseAndUpload(link);
-        console.log(
-          `[${outerIter}/${urls.length}] [Komikcast.com] ${comic.name}`
-        );
-      }
-    }
-
-    if (location.href == "https://komikcastid.com/") {
-      const urls = await Komikcastid.getUpdates(document);
-
-      const myspecials = specials.filter((e) =>
-        e.includes("https://komikcastid.com")
-      );
-
-      console.log(`Found Specials ${myspecials.length} comic links`);
-      console.log(`Found ${urls.length} comic links`);
-
-      console.log(urls);
-
-      for (const link of [...urls, ...myspecials]) {
-        outerIter++;
-
-        if (ignores.includes(link)) {
-          console.log("ignoreing " + link);
-        }
-        removeReq(link);
-        const comic = await Komikcastid.parseAndUpload(link);
-        console.log(
-          `[${outerIter}/${urls.length}] [Komikcastid.com] ${comic.name}`
-        );
-      }
-    }
-
-    if (location.href == "https://manhwaindo.id/") {
-      const urls = await Manhwaindo.getUpdates(document);
-      const myspecials = specials.filter((e) =>
-        e.includes("https://manhwaindo.id")
-      );
-
-      console.log(`Found Specials ${myspecials.length} comic links`);
-      console.log(`Found ${urls.length} comic links`);
-      for (const link of [...urls, ...urls]) {
-        outerIter++;
-        if (ignores.includes(link)) {
-          console.log("ignoreing " + link);
-        }
-
-        removeReq(link);
-
-        const comic = await Manhwaindo.parseAndUpload(link);
-        if (comic)
-          console.log(
-            `[${outerIter}/${urls.length}] [Manhwaindo.id] ${comic.name}`
-          );
-      }
-    }
-
-    if (location.href == "https://manhwaland.icu/") {
-      const myspecials = specials.filter((e) =>
-        e.includes("https://manhwaland.icu")
-      );
-
-      console.log(`Found Specials ${myspecials.length} comic links`);
-      const urls = await Manhwaland.getUpdates(document);
-      console.log(`Found ${urls.length} comic links`);
-      for (const link of urls) {
-        outerIter++;
-        if (ignores.includes(link)) {
-          console.log("ignoreing " + link);
-        }
-        removeReq(link);
-        const comic = await Manhwaland.parseAndUpload(link);
-        if (comic)
-          console.log(
-            `[${outerIter}/${urls.length}] [Manhwaland.icu] ${comic.name}`
-          );
+      } else {
+        console.log(`nothing to do ${location.href}`);
       }
     }
   }

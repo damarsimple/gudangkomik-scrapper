@@ -4,6 +4,13 @@ import { filenameGueser, extExtractor, downloadAndUpload } from "./helper";
 import { Chapter, ChapterCandidate, Comic } from "./types";
 import { gkInteractor } from "./gkInteractor";
 export class Manhwaindo {
+  public static getDeclaration() {
+    return {
+      name: "Manhwaindo",
+      url: "https://manhwaindo.id/",
+      class: Manhwaindo,
+    };
+  }
   public static async getUpdates(document: Document) {
     const links = new Set<string>();
 

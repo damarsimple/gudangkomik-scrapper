@@ -7,13 +7,20 @@ import { gkInteractor } from "./gkInteractor";
 // SAME TEMPLATE AS MANHWAINDO
 
 export class Manhwaland {
+  public static getDeclaration() {
+    return {
+      name: "Manhwaland",
+      url: "https://manhwaland.fun/",
+      class: Manhwaland,
+    };
+  }
   public static async getUpdates(document: Document) {
     const links = new Set<string>();
 
     console.log("Manhwaland detected");
     document.querySelectorAll("a").forEach((e) => {
       const link = e.getAttribute("href");
-      if (link && link.includes("https://manhwaland.icu/series/")) {
+      if (link && link.includes("https://manhwaland.fun/series/")) {
         links.add(link);
       }
     });
@@ -70,7 +77,7 @@ export class Manhwaland {
 
     const thumbUrl = await (
       await axios.get(
-        "https://manhwaland.icu/wp-json/oembed/1.0/embed?url=" + url
+        "https://manhwaland.fun/wp-json/oembed/1.0/embed?url=" + url
       )
     ).data.thumbnail_url;
 
