@@ -37,3 +37,25 @@ export const downloadAndUpload = async (url: string, path: string) => {
     Message: string;
   };
 };
+
+
+export const chapterNameDetection = (any: string) => {
+
+  const splits = any.split(" ");
+
+  for (let chunk = 0; chunk < splits.length; chunk++) {
+    const element = splits[chunk];
+
+    if (element == "Chapter") {
+
+      return splits[chunk + 1];
+
+    }
+
+
+  }
+
+
+
+
+}
