@@ -1,6 +1,6 @@
 import axios from "axios";
 import { uniq } from "lodash";
-import { filenameGueser, extExtractor, downloadAndUpload } from "./helper";
+import { filenameGueser, extExtractor, downloadAndUpload, chapterNameDetection } from './helper';
 import { Chapter, ChapterCandidate, Comic } from "./types";
 import { gkInteractor } from "./gkInteractor";
 export class Komikcastid {
@@ -22,7 +22,7 @@ export class Komikcastid {
         if (link && link.includes("https://komikcastid.com/komik/")) {
           links.add(link);
         }
-      } catch (error) {}
+      } catch (error) { }
     });
 
     const values = Array.from(links);
@@ -134,15 +134,13 @@ export class Komikcastid {
           console.log(`[${iter}/${chapterscandidate.length}] begin ${target}`);
 
           try {
-            const splits = target.split(" ");
 
-            const chunk = splits[splits.length - 1];
+            const name = chapterNameDetection(target);
 
-            const name = parseFloat(
-              isNaN(parseFloat(chunk[1])) ? chunk[0] : chunk[1]
-            );
+            console.log(`[${iter}/${chapterscandidate.length}] begin-start ${name}`);
 
-            if (isNaN(name)) {
+
+            if (!name) {
               console.log(
                 `[${iter}/${chapterscandidate.length}] skip ${target} ${name} NAN DETECTED`
               );

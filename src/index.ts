@@ -18,14 +18,17 @@ async function main() {
       url: string;
       class: any;
     }[] = [
-      Manhwaindo.getDeclaration(),
-      Manhwaland.getDeclaration(),
-      Komikcastid.getDeclaration(),
-      Komikcast.getDeclaration(),
-    ];
+        Manhwaindo.getDeclaration(),
+        Manhwaland.getDeclaration(),
+        Komikcastid.getDeclaration(),
+        Komikcast.getDeclaration(),
+      ];
 
     for (const x of declarations) {
       if (location.href == x.url) {
+
+
+
         console.log("fetching ignores and specials");
 
         const ignores: string[] = await (
@@ -41,14 +44,18 @@ async function main() {
         console.log(`detected ${x.name}`);
         const urls = await x.class.getUpdates(document);
 
-        const myspecials = specials.filter((e) => e.includes(x.url));
-
-        console.log(`Found Specials ${myspecials.length} comic links`);
+        console.log(`Found Specials ${specials.length} comic links`);
         console.log(`Found ${urls.length} comic links`);
 
         console.log(urls);
 
-        for (const link of [...urls, ...myspecials]) {
+        const targets = new Set<string>();
+
+        for (const url of [...specials, ...urls]) {
+          targets.add(url);
+        }
+
+        for (const link of targets.values()) {
           try {
             outerIter++;
 
